@@ -17,6 +17,9 @@
         "plugin",
         "obfuscation"
     ],
+    "files": [
+      "esbuild-plugin-obfuscator.js"
+    ],
     "author": "Matteo Gheza <matteo.gheza07@gmail.com>",
     "license": "MIT",
     "bugs": {
