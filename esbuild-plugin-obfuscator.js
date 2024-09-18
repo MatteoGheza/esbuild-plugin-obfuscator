@@ -3,10 +3,15 @@ import micromatch from 'micromatch';
 import { promises as fs } from 'fs';
 import { transform } from 'esbuild';
 
-export function ObfuscatorPlugin({ filter = [], shouldObfuscateOutput = false, ...options } = {}) {
+export function ObfuscatorPlugin({ filter = [], shouldObfuscateOutput = false, ignoreRequireImports = true, ...options } = {}) {
   return {
     name: 'obfuscator',
     async setup(build) {
+      options = {
+        ignoreRequireImports,
+        ...options,
+      };
+
       if (shouldObfuscateOutput) {
         build.initialOptions.write = false;
 
