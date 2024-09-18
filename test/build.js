@@ -1,5 +1,5 @@
 import esbuild from 'esbuild';
-import { esbuildObfuscatorPlugin } from '../esbuild-obfuscator-plugin.js';
+import { ObfuscatorPlugin } from '../esbuild-plugin-obfuscator.js';
 
 // Run esbuild with the obfuscator plugin and micromatch file filtering
 esbuild.build({
@@ -7,7 +7,7 @@ esbuild.build({
   bundle: true,
   outfile: 'test/dist/output.js', // Output file
   plugins: [
-    esbuildObfuscatorPlugin({
+    ObfuscatorPlugin({
       compact: true, // Obfuscator options
       controlFlowFlattening: true,
 
