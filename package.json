@@ -1,6 +1,6 @@
 {
     "name": "esbuild-plugin-obfuscator",
-    "version": "1.2.1",
+    "version": "1.2.2",
     "description": "An esbuild plugin that obfuscates JavaScript using javascript-obfuscator.",
     "main": "esbuild-plugin-obfuscator.js",
     "type": "module",
@@ -9,7 +9,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/matteogheza/esbuild-plugin-obfuscator.git"
+        "url": "https://github.com/matteogheza/esbuild-plugin-obfuscator"
     },
     "keywords": [
         "esbuild",
