@@ -1,4 +1,4 @@
-# esbuild-obfuscator-plugin
+# esbuild-plugin-obfuscator
 
 A plugin for [esbuild](https://esbuild.github.io/) that obfuscates JavaScript using [javascript-obfuscator](https://github.com/javascript-obfuscator/javascript-obfuscator). This plugin allows developers to selectively obfuscate JavaScript files during the build process, enhancing security by making the code more difficult to read and understand.
 
@@ -7,18 +7,18 @@ A plugin for [esbuild](https://esbuild.github.io/) that obfuscates JavaScript us
 Install the plugin with npm:
 
 ```bash
-npm install esbuild-obfuscator-plugin --save-dev
+npm install esbuild-plugin-obfuscator --save-dev
 ```
 
 ## Usage
 
-To use the `esbuild-obfuscator-plugin`, import it in your build script and configure it according to your needs. Below is an example of how to set up the plugin with `esbuild`:
+To use the `esbuild-plugin-obfuscator`, import it in your build script and configure it according to your needs. Below is an example of how to set up the plugin with `esbuild`:
 
 ### Example
 
 ```javascript
 import esbuild from 'esbuild';
-import { ObfuscatorPlugin } from 'esbuild-obfuscator-plugin';
+import { ObfuscatorPlugin } from 'esbuild-plugin-obfuscator';
 
 // Run esbuild with the obfuscator plugin and micromatch file filtering
 esbuild.build({
