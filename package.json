@@ -29,7 +29,7 @@
     },
     "homepage": "https://github.com/matteogheza/esbuild-plugin-obfuscator#readme",
     "dependencies": {
-        "esbuild": "^0.24.2",
+        "esbuild": "^0.25.5",
         "javascript-obfuscator": "^4.1.1",
         "micromatch": "^4.0.8"
     }
