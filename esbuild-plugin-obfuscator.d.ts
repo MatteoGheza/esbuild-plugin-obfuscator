@@ -14,6 +14,13 @@ export interface ObfuscatorPluginOptions extends ObfuscatorOptions {
    * @default false
    */
   shouldObfuscateOutput?: boolean;
+
+  /**
+   * If true, writes the output source map files when obfuscating the final output.
+   * This option is only relevant if `shouldObfuscateOutput` is true.
+   * @default false
+   */
+  shouldWriteOutputSourceMap?: boolean;
   
   /**
    * Whether to ignore require imports during obfuscation.

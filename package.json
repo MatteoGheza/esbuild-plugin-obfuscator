@@ -1,6 +1,6 @@
 {
     "name": "esbuild-plugin-obfuscator",
-    "version": "1.2.5",
+    "version": "1.3.0",
     "description": "An esbuild plugin that obfuscates JavaScript using javascript-obfuscator.",
     "main": "esbuild-plugin-obfuscator.js",
     "types": "esbuild-plugin-obfuscator.d.ts",
@@ -19,8 +19,8 @@
         "obfuscation"
     ],
     "files": [
-      "esbuild-plugin-obfuscator.js",
-      "esbuild-plugin-obfuscator.d.ts"
+        "esbuild-plugin-obfuscator.js",
+        "esbuild-plugin-obfuscator.d.ts"
     ],
     "author": "Matteo Gheza <matteo.gheza07@gmail.com>",
     "license": "MIT",
@@ -30,6 +30,7 @@
     "homepage": "https://github.com/matteogheza/esbuild-plugin-obfuscator#readme",
     "dependencies": {
         "esbuild": "^0.25.5",
+        "esbuild-extra": "^0.4.2",
         "javascript-obfuscator": "^4.1.1",
         "micromatch": "^4.0.8"
     }

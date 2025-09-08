@@ -1,12 +1,20 @@
 import JavaScriptObfuscator from 'javascript-obfuscator';
 import micromatch from 'micromatch';
 import { promises as fs } from 'fs';
-import { transform } from 'esbuild';
+import { getBuildExtensions } from 'esbuild-extra';
 
-export function ObfuscatorPlugin({ filter = [], shouldObfuscateOutput = false, ignoreRequireImports = true, ...options } = {}) {
+export function ObfuscatorPlugin({
+  filter = [],
+  shouldObfuscateOutput = false,
+  shouldWriteOutputSourceMap = false,
+  ignoreRequireImports = true,
+  ...options
+} = {}) {
   return {
     name: 'obfuscator',
     async setup(build) {
+      const { onTransform } = getBuildExtensions(build, 'obfuscator');
+      
       options = {
         ignoreRequireImports,
         ...options,
@@ -23,43 +31,53 @@ export function ObfuscatorPlugin({ filter = [], shouldObfuscateOutput = false, i
 
             const originalCode = output.text;
 
-            // Obfuscate the code using javascript-obfuscator
-            const obfuscatedCode = JavaScriptObfuscator.obfuscate(originalCode, options).getObfuscatedCode();
+            // Obfuscate the code using javascript-obfuscator with sourcemap generation
+            const obfuscationResult = JavaScriptObfuscator.obfuscate(originalCode, {
+              ...options,
+              sourceMap: true,
+              sourceMapFileName: filePath + '.map'
+            });
+
+            const obfuscatedCode = obfuscationResult.getObfuscatedCode();
+            const sourceMap = obfuscationResult.getSourceMap();
 
             // Write the obfuscated code to the file
             tasks.push(fs.writeFile(filePath, obfuscatedCode));
+            
+            if (shouldWriteOutputSourceMap) {
+              // Write the sourcemap file
+              tasks.push(fs.writeFile(filePath + '.map', sourceMap));
+            }
           }
 
           await Promise.all(tasks);
         });
       } else {
-        build.onLoad({ filter: /\.(js|ts)$/ }, async (args) => {
-          const isTs = args.path.endsWith('.ts');
-          let loader = isTs ? 'ts' : 'js';
-
-          // Read the file contents
-          let source = await fs.readFile(args.path, 'utf8');
-
+        onTransform({ 
+          loaders: ['js'],
+          namespace: 'file'
+        }, async (args) => {
           // Use micromatch to check if the input file matches any patterns in the filter array
           const shouldObfuscate = micromatch.isMatch(args.path, filter);
 
           // If the input file does not match the filter, skip obfuscation
-          if (shouldObfuscate) {
-            // If it's a TypeScript file, transpile it to JavaScript using esbuild
-            if (isTs) {
-              const result = await transform(await fs.readFile(args.path, 'utf8'), {
-                loader: 'ts',
-                sourcemap: false,
-              });
-              source = result.code;
-            }
-
-            source = JavaScriptObfuscator.obfuscate(source, options).getObfuscatedCode();
+          if (!shouldObfuscate) {
+            return { code: args.code };
           }
 
+          // Obfuscate the JavaScript code with sourcemap generation
+          const obfuscationResult = JavaScriptObfuscator.obfuscate(args.code, {
+            ...options,
+            sourceMap: true,
+            sourceMapFileName: args.path + '.map'
+          });
+
+          const obfuscatedCode = obfuscationResult.getObfuscatedCode();
+          const sourceMap = obfuscationResult.getSourceMap();
+
           return {
-            contents: source,
-            loader
+            code: obfuscatedCode,
+            map: sourceMap
           };
         });
       }
