@@ -73,7 +73,10 @@ export function ObfuscatorPlugin({
           });
 
           const obfuscatedCode = obfuscationResult.getObfuscatedCode();
-          const sourceMap = obfuscationResult.getSourceMap();
+          let sourceMap = obfuscationResult.getSourceMap();
+
+          sourceMap = JSON.parse(sourceMap);
+          sourceMap.sources = [];
 
           return {
             code: obfuscatedCode,
