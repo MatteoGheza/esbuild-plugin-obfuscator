@@ -21,6 +21,13 @@ export interface ObfuscatorPluginOptions extends ObfuscatorOptions {
    * @default false
    */
   shouldWriteOutputSourceMap?: boolean;
+
+  /**
+   * If true, generates source maps during the transform phase.
+   * This controls whether sourcemap URL comments are added to the obfuscated code.
+   * @default false
+   */
+  shouldGenerateSourceMap?: boolean;
   
   /**
    * Whether to ignore require imports during obfuscation.

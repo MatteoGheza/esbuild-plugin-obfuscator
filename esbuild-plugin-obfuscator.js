@@ -7,6 +7,7 @@ export function ObfuscatorPlugin({
   filter = [],
   shouldObfuscateOutput = false,
   shouldWriteOutputSourceMap = false,
+  shouldGenerateSourceMap = false,
   ignoreRequireImports = true,
   ...options
 } = {}) {
@@ -31,20 +32,25 @@ export function ObfuscatorPlugin({
 
             const originalCode = output.text;
 
-            // Obfuscate the code using javascript-obfuscator with sourcemap generation
-            const obfuscationResult = JavaScriptObfuscator.obfuscate(originalCode, {
+            // Obfuscate the code using javascript-obfuscator with conditional sourcemap generation
+            const obfuscatorOptions = {
               ...options,
-              sourceMap: true,
-              sourceMapFileName: filePath + '.map'
-            });
+              sourceMap: shouldWriteOutputSourceMap
+            };
+            
+            if (shouldWriteOutputSourceMap) {
+              obfuscatorOptions.sourceMapFileName = filePath + '.map';
+            }
+            
+            const obfuscationResult = JavaScriptObfuscator.obfuscate(originalCode, obfuscatorOptions);
 
             const obfuscatedCode = obfuscationResult.getObfuscatedCode();
-            const sourceMap = obfuscationResult.getSourceMap();
 
             // Write the obfuscated code to the file
             tasks.push(fs.writeFile(filePath, obfuscatedCode));
             
             if (shouldWriteOutputSourceMap) {
+              const sourceMap = obfuscationResult.getSourceMap();
               // Write the sourcemap file
               tasks.push(fs.writeFile(filePath + '.map', sourceMap));
             }
@@ -65,23 +71,34 @@ export function ObfuscatorPlugin({
             return { code: args.code };
           }
 
-          // Obfuscate the JavaScript code with sourcemap generation
-          const obfuscationResult = JavaScriptObfuscator.obfuscate(args.code, {
+          // Obfuscate the JavaScript code with conditional sourcemap generation
+          const obfuscatorOptions = {
             ...options,
-            sourceMap: true,
-            sourceMapFileName: args.path + '.map'
-          });
+            sourceMap: shouldGenerateSourceMap
+          };
+          
+          if (shouldGenerateSourceMap) {
+            obfuscatorOptions.sourceMapFileName = args.path + '.map';
+          }
+          
+          const obfuscationResult = JavaScriptObfuscator.obfuscate(args.code, obfuscatorOptions);
 
           const obfuscatedCode = obfuscationResult.getObfuscatedCode();
-          let sourceMap = obfuscationResult.getSourceMap();
 
-          sourceMap = JSON.parse(sourceMap);
-          sourceMap.sources = [];
+          if (shouldGenerateSourceMap) {
+            let sourceMap = obfuscationResult.getSourceMap();
+            sourceMap = JSON.parse(sourceMap);
+            sourceMap.sources = [];
 
-          return {
-            code: obfuscatedCode,
-            map: sourceMap
-          };
+            return {
+              code: obfuscatedCode,
+              map: sourceMap
+            };
+          } else {
+            return {
+              code: obfuscatedCode
+            };
+          }
         });
       }
     },
